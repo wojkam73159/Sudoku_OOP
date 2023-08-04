@@ -1,5 +1,3 @@
-# This is a sample Python script.
-import math
 from Board import Board
 
 

@@ -22,9 +22,9 @@ class Board:
             self.rows = []
             self.columns = []
             self.sections = []
-            self.fill_with_minus_ones()
+            self.fill_with_zeros()
 
-            cell_digit_pair = self.generate_17_different_cells_8_different_digits(5, 4)
+            cell_digit_pair = self.generate_X_different_cells_Y_different_digits(5, 4)
             for cell_coordinates, digit in cell_digit_pair:
                 row = int(cell_coordinates / size)
                 index = cell_coordinates % size
@@ -48,7 +48,7 @@ class Board:
                 cel.set_value(i)
                 i += 1
 
-    def fill_with_minus_ones(self):
+    def __fill_with_zeros(self):
         for i in range(0, self.size):
             temp_row = Row(self.size, [])
             self.rows.append(temp_row)
@@ -94,7 +94,7 @@ class Board:
             self.sections[section_index].data_structure.append(cell)
             cell.set_section(self.sections[section_index])
 
-    def generate_17_different_cells_8_different_digits(
+    def __generate_X_different_cells_Y_different_digits(
             self, how_many_numbers,
             how_many_different_digits):  # 17 numbers 8 digits sugested by internet 0.02%chance of impossible combination according to internet
         random_cells = set()
@@ -122,7 +122,8 @@ class Board:
 
         return res
 
-    def find_empty_location(self):  # przekazywanie argumentow do funkcji w naglowku? czy lepiej zwracac tuple i rozpakowywac
+    def __find_empty_location(
+            self):  # przekazywanie argumentow do funkcji w naglowku? czy lepiej zwracac tuple i rozpakowywac
         i = 0
         for row in self.rows:  # ask question how to hint that there is type Row here
             found_list = list(filter(lambda x: x[1].get_value() == 0, enumerate(row.get_data())))
@@ -133,7 +134,6 @@ class Board:
                 return True, i, found_list[0][0]
 
         return False, 0, 0
-
 
     def solve_sudoku_row_major(self):
 
