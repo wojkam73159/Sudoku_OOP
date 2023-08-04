@@ -3,7 +3,7 @@ from Column import Column
 from Section import Section
 
 
-class Cell:  #  ma wskazniki, na wiersz, kolumne i sekcje w jakiej jest, zeby przyspieszyc
+class Cell:  # ma wskazniki, na wiersz, kolumne i sekcje w jakiej jest, zeby przyspieszyc
     # ulatwic wywolywanie is valid
     def __init__(self, value: int):
         self.value = value  # unknown=-1 else [0,size]

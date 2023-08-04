@@ -96,7 +96,10 @@ class Board:
 
     def __generate_X_different_cells_Y_different_digits(
             self, how_many_numbers,
-            how_many_different_digits):  # 17 numbers 8 digits sugested by internet 0.02%chance of impossible combination according to internet
+            how_many_different_digits):
+        # 17 numbers 8 digits sugested by internet 0.02%chance of impossible
+        # combination according to internet
+        # but not accoring to me :(
         random_cells = self.__generate_X_different_cells(how_many_numbers)
         # how_many_numbers different cells chosen
         # now give them how_many_different_digits different digits range 0:8
@@ -141,12 +144,9 @@ class Board:
         # ciezkie wywolywanie tego w pythonie z duck typingiem i bez type hint , da sie to jakos ulatwic?
 
         for num in range(1, self.size + 1):
-
             cell.set_value(num)  # make assumption
-
             self.print_rows_values()
             print(" ")
-
             if cell.validate():
                 if self.solve_sudoku_row_major():
                     return True
