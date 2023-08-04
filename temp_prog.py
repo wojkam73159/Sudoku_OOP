@@ -20,4 +20,4 @@ for i in range(0, 81):
     sec_count3 += 1
     print("index:{}, SC:{}".format(i+1, section_number))
 
-#     if (i ) % math.isqrt(size) != 0:
+#     if (i ) % math.isqrt(size) != 0

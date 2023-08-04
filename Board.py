@@ -122,7 +122,7 @@ class Board:
 
         return res
 
-    def find_empty_location(self):  # przekazywanie argumentow do funkcji? czy lepiej zwraca tuple i rozpakowywac
+    def find_empty_location(self):  # przekazywanie argumentow do funkcji w naglowku? czy lepiej zwracac tuple i rozpakowywac
         i = 0
         for row in self.rows:  # ask question how to hint that there is type Row here
             found_list = list(filter(lambda x: x[1].get_value() == 0, enumerate(row.get_data())))
