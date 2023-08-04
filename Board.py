@@ -25,9 +25,9 @@ class Board:
             self.__fill_with_zeros()
 
             cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(5, 4)
-            for cell_coordinates, digit in cell_digit_pair:
-                row = int(cell_coordinates / size)
-                index = cell_coordinates % size
+            for cell_coordinates_flat, digit in cell_digit_pair:
+                row = int(cell_coordinates_flat / size)
+                index = cell_coordinates_flat % size
                 cell_actual = self.rows[row].get_data_at(index)
                 cell_actual.set_value(digit)
             self.print_rows_values()
@@ -97,13 +97,7 @@ class Board:
     def __generate_X_different_cells_Y_different_digits(
             self, how_many_numbers,
             how_many_different_digits):  # 17 numbers 8 digits sugested by internet 0.02%chance of impossible combination according to internet
-        random_cells = set()
-        possible_cells = list(range(0, self.size * self.size))
-
-        while len(random_cells) != how_many_numbers:
-            test_elem = random.choices(possible_cells)
-            if test_elem[0] not in random_cells:
-                random_cells.add(test_elem[0])
+        random_cells = self.__generate_X_different_cells(how_many_numbers)
         # how_many_numbers different cells chosen
         # now give them how_many_different_digits different digits range 0:8
         res = []
@@ -192,3 +186,23 @@ class Board:
 
     def __str__(self):
         pass
+
+    def __generate_X_different_cells(self, how_many_numbers):
+        random_cells = set()
+        possible_cells = list(range(0, self.size * self.size))
+
+        while len(random_cells) != how_many_numbers:
+            test_elem = random.choices(possible_cells)
+            if test_elem[0] not in random_cells:
+                random_cells.add(test_elem[0])
+        return list(random_cells)
+
+    def obscure_board(self, number_of_obscured_cells):
+
+        indexes = self.__generate_X_different_cells(number_of_obscured_cells)
+        for cell_coordinates_flat in indexes:
+            row = int(cell_coordinates_flat / self.size)
+            index = cell_coordinates_flat % self.size
+            cell=self.rows[row].get_data_at(index)
+            cell.set_value('X')
+

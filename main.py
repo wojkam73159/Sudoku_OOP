@@ -11,6 +11,8 @@ if __name__ == '__main__':
 
     board.print_rows_values()
     print(" ")
+    board.obscure_board(17)
+    board.print_rows_values()
     ##################################################
     # board.fill_rows_ascending()
     # print("rows:")
