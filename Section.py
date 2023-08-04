@@ -7,5 +7,3 @@ class Section(Validatable):  # section to sekcja ktora jest wyprasowana(flatten)
 
     def __str__(self):
         return str(self.data_structure)
-
-

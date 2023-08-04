@@ -203,6 +203,5 @@ class Board:
         for cell_coordinates_flat in indexes:
             row = int(cell_coordinates_flat / self.size)
             index = cell_coordinates_flat % self.size
-            cell=self.rows[row].get_data_at(index)
+            cell = self.rows[row].get_data_at(index)
             cell.set_value('X')
-

@@ -9,7 +9,7 @@ class Validatable:
     def get_data_at(self, index: int):
         return self.data_structure[index]
 
-    def is_valid(self):  # todo check
+    def is_valid(self):
 
         section_numbers = list(map(lambda y: y.get_value(), self.data_structure))
         dup_size = len(list(filter(lambda y: section_numbers.count(y) > 1, list(range(1, self.size + 1)))))
@@ -17,4 +17,3 @@ class Validatable:
             return False
         else:
             return True
-

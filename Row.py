@@ -8,6 +8,3 @@ class Row(Validatable):
 
     def __str__(self):
         return str(self.data_structure)
-
-
-
