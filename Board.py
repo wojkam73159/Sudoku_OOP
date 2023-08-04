@@ -22,9 +22,9 @@ class Board:
             self.rows = []
             self.columns = []
             self.sections = []
-            self.fill_with_zeros()
+            self.__fill_with_zeros()
 
-            cell_digit_pair = self.generate_X_different_cells_Y_different_digits(5, 4)
+            cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(5, 4)
             for cell_coordinates, digit in cell_digit_pair:
                 row = int(cell_coordinates / size)
                 index = cell_coordinates % size
@@ -139,7 +139,7 @@ class Board:
 
         # If there is no unassigned
         # location, we are done
-        is_found, row, col = self.find_empty_location()
+        is_found, row, col = self.__find_empty_location()
         if not is_found:
             return True
 
