@@ -10,10 +10,6 @@ import math
 class Board:
     def __init__(self, size: int):
         self.size = size
-        # if is_square(size):
-        #    section_size=math.isqrt(size)
-        # else:
-        #    raise Exception('bad size of board!')
 
         # try generate valid board with high possibility of success
         failed = True
@@ -61,12 +57,11 @@ class Board:
         row_index = 0
         column_index = 0
         section_index = 0
-        section_count1 = 0  # math.isqrt(size)
-        section_count2 = 0  # size
-        section_count3 = 0  # size *math.isqrt(size)
+        section_count1 = 0
+        section_count2 = 0
+        section_count3 = 0
         for i in range(0, self.size * self.size):
             cell = Cell(0)
-            # for testing fill with i
             if (i + 1) % self.size != 0:
                 cell.set_row(self.rows[row_index])
                 self.rows[row_index].data_structure.append(cell)
