@@ -10,9 +10,4 @@ class Row(Validatable):
         return str(self.data_structure)
 
 
-'''    def is_valid(self):
-        for i in range(0, self.size ):
-            how_many = self.data_structure.count(i)
-            if how_many > 1:
-                return False
-        return True'''
+

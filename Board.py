@@ -134,7 +134,7 @@ class Board:
 
         return False, 0, 0
 
-    # zamien to na zwykly solver
+
     def solve_sudoku_row_major(self):
 
         # If there is no unassigned
