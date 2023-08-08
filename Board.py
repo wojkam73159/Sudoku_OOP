@@ -1,8 +1,6 @@
 import random
 from typing import List
-from Row import Row
-from Column import Column
-from Section import Section
+
 from Cell import Cell
 import math
 
@@ -20,9 +18,9 @@ class Board:
             # zeby zmniiejszyc coupling
             # plus row column section maja na celu pomoc w walidowaniu tablicy
             # natomiast posiadanie Cells powinno tez nalezec do Boarda, a nie
-            self.rows: List[Row] = []  # Board jest wlascicielem komurek, wiec moze sie do nich odwolywac
-            self.columns: List[Column] = []
-            self.sections: List[Section] = []
+            self.rows: List[Validatable] = []  # Board jest wlascicielem komurek, wiec moze sie do nich odwolywac
+            self.columns: List[Validatable] = []
+            self.sections: List[Validatable] = []
             self.__fill_with_zeros()
 
             cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(10, 5)
@@ -49,9 +47,9 @@ class Board:
     def __fill_with_zeros(self):
         for i in range(0, self.size):
             self.data.append([])
-            self.rows.append(Row(self.size))
-            self.columns.append(Column(self.size))
-            self.sections.append(Section(self.size))
+            self.rows.append(Validatable(self.size))
+            self.columns.append(Validatable(self.size))
+            self.sections.append(Validatable(self.size))
 
         row_index = 0
         column_index = 0

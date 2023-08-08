@@ -1,6 +1,5 @@
-from Row import Row
-from Column import Column
-from Section import Section
+
+from Validatable import Validatable
 
 
 class Cell:  # ma wskazniki, na wiersz, kolumne i sekcje w jakiej jest, zeby przyspieszyc
@@ -11,9 +10,9 @@ class Cell:  # ma wskazniki, na wiersz, kolumne i sekcje w jakiej jest, zeby prz
         # bo nie potrzebujeskomplikowanego mechanizmu zeby
         # tylko dodanie observera tylko zagmatwało by logikę
         # dowiazywac obserwatorów podczas runtime, wiec nie jestem pewien ze jest potrzebny
-        self.my_row: Row = None
-        self.my_column: Column = None
-        self.my_section: Section = None
+        self.my_row: Validatable = None
+        self.my_column: Validatable = None
+        self.my_section: Validatable = None
 
     def __str__(self):
         return '{}'.format(self.value)
@@ -24,13 +23,13 @@ class Cell:  # ma wskazniki, na wiersz, kolumne i sekcje w jakiej jest, zeby prz
     def set_value(self, value):
         self.value = value
 
-    def set_row(self, row: Row):
+    def set_row(self, row: Validatable):
         self.my_row = row
 
-    def set_column(self, column: Column):
+    def set_column(self, column: Validatable):
         self.my_column = column
 
-    def set_section(self, section: Section):
+    def set_section(self, section: Validatable):
         self.my_section = section
 
     def get_row(self):
