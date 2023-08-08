@@ -1,10 +1,12 @@
 import random
-
+from typing import List
 from Row import Row
 from Column import Column
 from Section import Section
 from Cell import Cell
 import math
+
+from Validatable import Validatable
 
 
 class Board:
@@ -14,30 +16,30 @@ class Board:
         # try generate valid board with high possibility of success
         failed = True
         while failed:
-
-            self.rows = []
-            self.columns = []
-            self.sections = []
+            self.data: List[List[Cell]] = []  # lepiej odwolywac sie  bezposrednio
+            # zeby zmniiejszyc coupling
+            # plus row column section maja na celu pomoc w walidowaniu tablicy
+            # natomiast posiadanie Cells powinno tez nalezec do Boarda, a nie
+            self.rows: List[Row] = []  # Board jest wlascicielem komurek, wiec moze sie do nich odwolywac
+            self.columns: List[Column] = []
+            self.sections: List[Section] = []
             self.__fill_with_zeros()
 
-            cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(5, 4)
+            cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(10, 5)
             for cell_coordinates_flat, digit in cell_digit_pair:
                 row = int(cell_coordinates_flat / size)
                 index = cell_coordinates_flat % size
-                cell_actual = self.rows[row].get_data_at(index)
-                cell_actual.set_value(digit)
-            self.print_rows_values()
-            print("failed to generate")
-            for row in self.rows:
-                for cell in row.get_data():
-                    if cell.validate():
-                        failed = False
-                        continue
-                    else:
-                        failed = True
-                        break
+                cell = self.data[row][index]
+                cell.set_value(digit)
+                if cell.validate():
+                    failed = False
+                else:
+                    failed = True
+                    # /self.print_rows()
+                    # print("failed to generate board")
+                    break
 
-    def fill_rows_ascending(self):
+    def _fill_rows_ascending(self):
         i = 1
         for row in self.rows:
             for cel in row.get_data():
@@ -46,13 +48,10 @@ class Board:
 
     def __fill_with_zeros(self):
         for i in range(0, self.size):
-            temp_row = Row(self.size, [])
-            self.rows.append(temp_row)
-            temp_column = Column(self.size, [])
-            self.columns.append(temp_column)
-
-            temp_section = Section(self.size, [])
-            self.sections.append(temp_section)
+            self.data.append([])
+            self.rows.append(Row(self.size))
+            self.columns.append(Column(self.size))
+            self.sections.append(Section(self.size))
 
         row_index = 0
         column_index = 0
@@ -64,13 +63,18 @@ class Board:
             cell = Cell(0)
             if (i + 1) % self.size != 0:
                 cell.set_row(self.rows[row_index])
-                self.rows[row_index].data_structure.append(cell)
+                # self.rows[row_index].cells.append(cell)  # ???demeter
+                self.rows[row_index].append_cell(cell)
+                self.data[row_index].append(cell)
             else:
                 cell.set_row(self.rows[row_index])
-                self.rows[row_index].data_structure.append(cell)
+                # self.rows[row_index].cells.append(cell)  # ???demeter
+                self.rows[row_index].append_cell(cell)
+                self.data[row_index].append(cell)
                 row_index += 1
             column_index = i % self.size
-            self.columns[column_index].data_structure.append(cell)
+            # self.columns[column_index].cells.append(cell)  # ???demeter
+            self.columns[column_index].append_cell(cell)
             cell.set_column(self.columns[column_index])
             # section filling
             if section_count1 == math.isqrt(self.size):
@@ -86,7 +90,8 @@ class Board:
             section_count1 += 1
             section_count2 += 1
             section_count3 += 1
-            self.sections[section_index].data_structure.append(cell)
+            # self.sections[section_index].cells.append(cell)  # ???demeter
+            self.sections[section_index].append_cell(cell)
             cell.set_section(self.sections[section_index])
 
     def __generate_X_different_cells_Y_different_digits(
@@ -115,9 +120,9 @@ class Board:
         return res
 
     def __find_empty_location(
-            self):  # przekazywanie argumentow do funkcji w naglowku? czy lepiej zwracac tuple i rozpakowywac
+            self):
         i = 0
-        for row in self.rows:  # ask question how to hint that there is type Row here
+        for row in self.rows:
             found_list = list(filter(lambda x: x[1].get_value() == 0, enumerate(row.get_data())))
             if len(found_list) == 0:
                 i += 1
@@ -134,13 +139,11 @@ class Board:
         is_found, row, col = self.__find_empty_location()
         if not is_found:
             return True
-
-        cell = self.rows[row].get_data_at(col)
-        # ciezkie wywolywanie tego w pythonie z duck typingiem i bez type hint , da sie to jakos ulatwic?
+        cell = self.data[row][col]
 
         for num in range(1, self.size + 1):
             cell.set_value(num)  # make assumption
-            self.print_rows_values()
+            # self.print_rows_values()
             print(" ")
             if cell.validate():
                 if self.solve_sudoku_row_major():
@@ -149,32 +152,18 @@ class Board:
                 cell.set_value(0)
         return False
 
-    def print_rows_values(self):
-        for row in self.rows:
-            # print(row)
-            res = map(str, row.get_data())
-            print(list(res))
+    @staticmethod
+    def _print_cells(structure: List[Validatable]):
+        for elem in structure:
+            print(elem)
 
-    def print_columns_values(self):
-        for col in self.columns:
-            res = map(str, col.get_data())
-            print(list(res))
+    def print_rows(self):
+        self._print_cells(self.rows)
 
-    def print_sections_values(self):
-        for sec in self.sections:
-            res = map(str, sec.get_data())
-            print(list(res))
+    def print_columns(self):
+        self._print_cells(self.columns)
 
-    def print_rows_objects(self):
-        for row in self.rows:
-            print(row)
-
-    def print_columns_objects(self):
-        for col in self.columns:
-            res = map(str, col.get_data())
-            print(list(res))
-
-    def print_sections_objects(self):
+    def print_sections(self):
         for sec in self.sections:
             res = map(str, sec.get_data())
             print(list(res))
@@ -198,5 +187,5 @@ class Board:
         for cell_coordinates_flat in indexes:
             row = int(cell_coordinates_flat / self.size)
             index = cell_coordinates_flat % self.size
-            cell = self.rows[row].get_data_at(index)
+            cell = self.data[row][index]
             cell.set_value('X')

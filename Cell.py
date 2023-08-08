@@ -7,12 +7,13 @@ class Cell:  # ma wskazniki, na wiersz, kolumne i sekcje w jakiej jest, zeby prz
     # ulatwic wywolywanie is valid
     def __init__(self, value: int):
         self.value = value  # unknown=-1 else [0,size]
-        # zeby zrobic decoupling mozna uzyc patternu observer ale nie jest tutaj potrzebny, bo nie potrzebujeskomplikowanego mechanizmu zeby
+        # zeby zrobic decoupling mozna uzyc patternu observer ale nie jest tutaj potrzebny,
+        # bo nie potrzebujeskomplikowanego mechanizmu zeby
         # tylko dodanie observera tylko zagmatwało by logikę
         # dowiazywac obserwatorów podczas runtime, wiec nie jestem pewien ze jest potrzebny
-        self.my_row = None
-        self.my_column = None
-        self.my_section = None
+        self.my_row: Row = None
+        self.my_column: Column = None
+        self.my_section: Section = None
 
     def __str__(self):
         return '{}'.format(self.value)
