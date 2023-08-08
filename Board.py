@@ -17,7 +17,7 @@ class Board:
             self.data: List[List[Cell]] = []  # lepiej odwolywac sie  bezposrednio
             # zeby zmniiejszyc coupling
             # plus row column section maja na celu pomoc w walidowaniu tablicy
-            # natomiast posiadanie Cells powinno tez nalezec do Boarda, a nie
+            # natomiast posiadanie Cells powinno tez nalezec do Boarda,
             self.rows: List[Validatable] = []  # Board jest wlascicielem komurek, wiec moze sie do nich odwolywac
             self.columns: List[Validatable] = []
             self.sections: List[Validatable] = []
