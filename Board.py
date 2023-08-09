@@ -17,13 +17,10 @@ class Board:
         # try generate valid board with high possibility of success
         failed = True
         while failed:
-            self.data: List[List[Cell]] = []  # lepiej odwolywac sie  bezposrednio
-            # zeby zmniiejszyc coupling
-            # plus row column section maja na celu pomoc w walidowaniu tablicy
-            # natomiast posiadanie Cells powinno tez nalezec do Boarda,
-            self.rows: List[Row] = []  # Board jest wlascicielem komurek, wiec moze sie do nich odwolywac
-            self.columns: List[Column] = []
-            self.sections: List[Section] = []
+            self._data: List[List[Cell]] = []
+            self._rows: List[Row] = []
+            self._columns: List[Column] = []
+            self._sections: List[Section] = []
             self.__fill_with_zeros()
 
             cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(start_cells,
@@ -31,27 +28,28 @@ class Board:
             for cell_coordinates_flat, digit in cell_digit_pair:
                 row = int(cell_coordinates_flat / size)
                 index = cell_coordinates_flat % size
-                cell = self.data[row][index]
-                cell.set_value(digit)
+                cell = self._data[row][index]
+                cell.value = digit
                 if cell.validate():
                     failed = False
                 else:
                     failed = True
                     break
+        self.print_rows()
 
     def _fill_rows_ascending(self):
         i = 1
-        for row in self.rows:
-            for cel in row.get_data():
-                cel.set_value(i)
+        for row in self._rows:
+            for cel in row.cells():
+                cel.value = i
                 i += 1
 
     def __fill_with_zeros(self):
         for i in range(0, self.size):
-            self.data.append([])
-            self.rows.append(Row(self.size))
-            self.columns.append(Column(self.size))
-            self.sections.append(Section(self.size))
+            self._data.append([])
+            self._rows.append(Row(self.size))
+            self._columns.append(Column(self.size))
+            self._sections.append(Section(self.size))
 
         row_index = 0
         column_index = 0
@@ -61,15 +59,15 @@ class Board:
         finished_one_row_of_sections = 0
         for i in range(0, self.size * self.size):
             cell = Cell(0)
-            self.rows[row_index].append_cell(cell)
-            self.data[row_index].append(cell)
+            self._rows[row_index].append_cell(cell)
+            self._data[row_index].append(cell)
             if (i + 1) % self.size == 0:
                 row_index += 1
             column_index = i % self.size
-            self.columns[column_index].append_cell(cell)
+            self._columns[column_index].append_cell(cell)
 
             # section filling
-            self.sections[section_index].append_cell(cell)
+            self._sections[section_index].append_cell(cell)
             finished_one_row_in_section += 1
             finished_one_row_in_sudoku += 1
             finished_one_row_of_sections += 1
@@ -83,19 +81,11 @@ class Board:
                 finished_one_row_of_sections = 0
                 section_index += math.isqrt(self.size)
 
-        print("rows")
-        self.print_rows()
-        print("columns")
-        self.print_columns()
-        print("sections")
-        self.print_sections()
-
     def __generate_X_different_cells_Y_different_digits(
             self, how_many_numbers,
             how_many_different_digits):
         # 17 numbers 8 digits sugested by internet 0.02%chance of impossible
         # combination according to internet
-        # but not accoring to me :(
         random_cells = self.__generate_X_different_cells(how_many_numbers)
         # how_many_numbers different cells chosen
         # now give them how_many_different_digits different digits range 0:8
@@ -117,7 +107,7 @@ class Board:
 
     def __find_empty_location(self):
         i = 0
-        for row in self.rows:
+        for row in self._rows:
             found_elem = row.get_first_empty_cell_index()
             if found_elem == -1:
                 i += 1
@@ -132,15 +122,15 @@ class Board:
         is_found, row, col = self.__find_empty_location()
         if not is_found:
             return True
-        cell = self.data[row][col]
+        cell = self._data[row][col]
 
         for num in range(1, self.size + 1):
-            cell.set_value(num)  # make assumption
+            cell.value = num  # make assumption
             if cell.validate():
                 if self.solve_sudoku_row_major():
                     return True
             else:
-                cell.set_value(0)
+                cell.value = 0
         return False
 
     @staticmethod
@@ -149,14 +139,14 @@ class Board:
             print(elem)
 
     def print_rows(self):
-        self._print_cells(self.rows)
+        self._print_cells(self._rows)
 
     def print_columns(self):
-        self._print_cells(self.columns)
+        self._print_cells(self._columns)
 
     def print_sections(self):
-        for sec in self.sections:
-            res = map(str, sec.get_data())
+        for sec in self._sections:
+            res = map(str, sec.cells)
             print(list(res))
 
     def __str__(self):
@@ -178,5 +168,5 @@ class Board:
         for cell_coordinates_flat in indexes:
             row = int(cell_coordinates_flat / self.size)
             index = cell_coordinates_flat % self.size
-            cell = self.data[row][index]
-            cell.set_value('X')
+            cell = self._data[row][index]
+            cell.value = 'X'
