@@ -6,7 +6,7 @@ from Board import Board
 
 class MyTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.board = Board(9)
+        self.board = Board(9, 1, 1)
 
     def test_check_cells_being_shared_properly_between_rows_columns(self):
         # how to write test to test class private methods
@@ -61,7 +61,7 @@ class MyTestCase(unittest.TestCase):
             section_index2 = section_index2 % self.board.size
 
     def test_board4(self):
-        board = Board(4)
+        board = Board(4, 1, 1)
         solved = board.solve_sudoku_row_major()
         if solved:
             print("succcccccccccccccccces")
@@ -70,7 +70,7 @@ class MyTestCase(unittest.TestCase):
         board.print_rows()
 
     def test_board9(self):
-        board = Board(9)
+        board = Board(9, 1, 1)
         solved = board.solve_sudoku_row_major()
         if solved:
             print("succcccccccccccccccces")
@@ -79,7 +79,7 @@ class MyTestCase(unittest.TestCase):
         board.print_rows()
 
     def test_board16(self):
-        board = Board(16)
+        board = Board(16, 1, 1)
         solved = board.solve_sudoku_row_major()
         if solved:
             print("succcccccccccccccccces")
@@ -89,7 +89,7 @@ class MyTestCase(unittest.TestCase):
 
     @unittest.SkipTest
     def test_board25(self):
-        board = Board(25)
+        board = Board(25, 1, 1)
         solved = board.solve_sudoku_row_major()
         if solved:
             print("succcccccccccccccccces")
