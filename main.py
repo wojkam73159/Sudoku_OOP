@@ -1,7 +1,7 @@
 from Board import Board
 
 if __name__ == '__main__':
-    board = Board(9)
+    board = Board(16, 1, 1)
     solved = board.solve_sudoku_row_major()
     if solved:
         print("succcccccccccccccccces")
@@ -10,5 +10,4 @@ if __name__ == '__main__':
 
     board.print_rows()
     print(" ")
-    board.obscure_board(17)
-
+    board.obscure_board(1)

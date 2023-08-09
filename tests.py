@@ -60,5 +60,43 @@ class MyTestCase(unittest.TestCase):
             section_index2 += 1
             section_index2 = section_index2 % self.board.size
 
-    if __name__ == '__main__':
-        unittest.main()
+    def test_board4(self):
+        board = Board(4)
+        solved = board.solve_sudoku_row_major()
+        if solved:
+            print("succcccccccccccccccces")
+        else:
+            print("failed")
+        board.print_rows()
+
+    def test_board9(self):
+        board = Board(9)
+        solved = board.solve_sudoku_row_major()
+        if solved:
+            print("succcccccccccccccccces")
+        else:
+            print("failed")
+        board.print_rows()
+
+    def test_board16(self):
+        board = Board(16)
+        solved = board.solve_sudoku_row_major()
+        if solved:
+            print("succcccccccccccccccces")
+        else:
+            print("failed")
+        board.print_rows()
+
+    @unittest.SkipTest
+    def test_board25(self):
+        board = Board(25)
+        solved = board.solve_sudoku_row_major()
+        if solved:
+            print("succcccccccccccccccces")
+        else:
+            print("failed")
+        board.print_rows()
+
+
+if __name__ == '__main__':
+    unittest.main()

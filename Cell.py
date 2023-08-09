@@ -1,4 +1,3 @@
-
 from Validatable import Validatable
 
 
@@ -15,7 +14,7 @@ class Cell:  # ma wskazniki, na wiersz, kolumne i sekcje w jakiej jest, zeby prz
         self.my_section: Validatable = None
 
     def __str__(self):
-        return '{}'.format(self.value)
+        return str(self.value)
 
     def get_value(self):
         return self.value
@@ -42,11 +41,4 @@ class Cell:  # ma wskazniki, na wiersz, kolumne i sekcje w jakiej jest, zeby prz
         return self.my_section
 
     def validate(self):  # tutaj moze byc visitor moze byc tez parralel, albo async await
-        if not self.my_row.is_valid():
-            return False
-        if not self.my_column.is_valid():
-            return False
-        if not self.my_section.is_valid():
-            return False
-        else:
-            return True
+        return all(x.is_valid() for x in (self.my_row, self.my_column, self.my_section))

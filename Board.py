@@ -2,13 +2,16 @@ import random
 from typing import List
 
 from Cell import Cell
+from Row import Row
+from Column import Column
+from Section import Section
 import math
 
 from Validatable import Validatable
 
 
 class Board:
-    def __init__(self, size: int):
+    def __init__(self, size: int, start_cells: int, different_nums_for_start_cells: int):
         self.size = size
 
         # try generate valid board with high possibility of success
@@ -18,12 +21,13 @@ class Board:
             # zeby zmniiejszyc coupling
             # plus row column section maja na celu pomoc w walidowaniu tablicy
             # natomiast posiadanie Cells powinno tez nalezec do Boarda,
-            self.rows: List[Validatable] = []  # Board jest wlascicielem komurek, wiec moze sie do nich odwolywac
-            self.columns: List[Validatable] = []
-            self.sections: List[Validatable] = []
+            self.rows: List[Row] = []  # Board jest wlascicielem komurek, wiec moze sie do nich odwolywac
+            self.columns: List[Column] = []
+            self.sections: List[Section] = []
             self.__fill_with_zeros()
 
-            cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(10, 5)
+            cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(start_cells,
+                                                                                   different_nums_for_start_cells)
             for cell_coordinates_flat, digit in cell_digit_pair:
                 row = int(cell_coordinates_flat / size)
                 index = cell_coordinates_flat % size
@@ -33,8 +37,6 @@ class Board:
                     failed = False
                 else:
                     failed = True
-                    # /self.print_rows()
-                    # print("failed to generate board")
                     break
 
     def _fill_rows_ascending(self):
@@ -47,50 +49,46 @@ class Board:
     def __fill_with_zeros(self):
         for i in range(0, self.size):
             self.data.append([])
-            self.rows.append(Validatable(self.size))
-            self.columns.append(Validatable(self.size))
-            self.sections.append(Validatable(self.size))
+            self.rows.append(Row(self.size))
+            self.columns.append(Column(self.size))
+            self.sections.append(Section(self.size))
 
         row_index = 0
         column_index = 0
         section_index = 0
-        section_count1 = 0
-        section_count2 = 0
-        section_count3 = 0
+        finished_one_row_in_section = 0
+        finished_one_row_in_sudoku = 0
+        finished_one_row_of_sections = 0
         for i in range(0, self.size * self.size):
             cell = Cell(0)
-            if (i + 1) % self.size != 0:
-                cell.set_row(self.rows[row_index])
-                # self.rows[row_index].cells.append(cell)  # ???demeter
-                self.rows[row_index].append_cell(cell)
-                self.data[row_index].append(cell)
-            else:
-                cell.set_row(self.rows[row_index])
-                # self.rows[row_index].cells.append(cell)  # ???demeter
-                self.rows[row_index].append_cell(cell)
-                self.data[row_index].append(cell)
+            self.rows[row_index].append_cell(cell)
+            self.data[row_index].append(cell)
+            if (i + 1) % self.size == 0:
                 row_index += 1
             column_index = i % self.size
-            # self.columns[column_index].cells.append(cell)  # ???demeter
             self.columns[column_index].append_cell(cell)
-            cell.set_column(self.columns[column_index])
+
             # section filling
-            if section_count1 == math.isqrt(self.size):
-                section_count1 = 0
+            self.sections[section_index].append_cell(cell)
+            finished_one_row_in_section += 1
+            finished_one_row_in_sudoku += 1
+            finished_one_row_of_sections += 1
+            if finished_one_row_in_section == math.isqrt(self.size):
+                finished_one_row_in_section = 0
                 section_index += 1
-            if section_count2 == self.size:
-                section_count2 = 0
+            if finished_one_row_in_sudoku == self.size:
+                finished_one_row_in_sudoku = 0
                 section_index -= math.isqrt(self.size)
-            if section_count3 == self.size * math.isqrt(self.size):
-                section_count3 = 0
+            if finished_one_row_of_sections == self.size * math.isqrt(self.size):
+                finished_one_row_of_sections = 0
                 section_index += math.isqrt(self.size)
 
-            section_count1 += 1
-            section_count2 += 1
-            section_count3 += 1
-            # self.sections[section_index].cells.append(cell)  # ???demeter
-            self.sections[section_index].append_cell(cell)
-            cell.set_section(self.sections[section_index])
+        print("rows")
+        self.print_rows()
+        print("columns")
+        self.print_columns()
+        print("sections")
+        self.print_sections()
 
     def __generate_X_different_cells_Y_different_digits(
             self, how_many_numbers,
@@ -117,17 +115,14 @@ class Board:
 
         return res
 
-    def __find_empty_location(
-            self):
+    def __find_empty_location(self):
         i = 0
         for row in self.rows:
-            found_list = list(filter(lambda x: x[1].get_value() == 0, enumerate(row.get_data())))
-            if len(found_list) == 0:
+            found_elem = row.get_first_empty_cell_index()
+            if found_elem == -1:
                 i += 1
-                continue
-            else:  # len(found_list) > 0:
-                return True, i, found_list[0][0]
-
+            else:
+                return True, i, found_elem
         return False, 0, 0
 
     def solve_sudoku_row_major(self):
@@ -141,8 +136,6 @@ class Board:
 
         for num in range(1, self.size + 1):
             cell.set_value(num)  # make assumption
-            # self.print_rows_values()
-            print(" ")
             if cell.validate():
                 if self.solve_sudoku_row_major():
                     return True

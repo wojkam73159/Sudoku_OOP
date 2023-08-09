@@ -1,3 +1,6 @@
+from abc import abstractmethod
+
+
 class Validatable:
     def __init__(self, size: int):
         self.size = size
@@ -9,10 +12,12 @@ class Validatable:
     def set_data(self, cells):
         self.cells = cells
 
+    @abstractmethod
     def append_cell(self, cell):  # moja klasa to obudowa struktury danych jakiejs
         # wiec powinien byc getter i setter do nich
         # usage w klasie board
-        self.cells.append(cell)
+        # self.cells.append(cell)
+        pass
 
     def get_data_at(self, index: int):
         return self.cells[index]
