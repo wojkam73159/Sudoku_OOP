@@ -15,7 +15,7 @@ class MyTestCase(unittest.TestCase):
 
         for i in range(0, self.board.size):
             for j in range(0, self.board.size):
-                self.assertEqual(self.board.rows[i].cells[j], self.board.columns[j].cells[i])
+                self.assertEqual(self.board._rows[i]._cells[j], self.board._columns[j]._cells[i])
 
         # Board.
 
@@ -55,8 +55,8 @@ class MyTestCase(unittest.TestCase):
 
             row = int(i / self.board.size)
             column = i % self.board.size
-            self.assertEqual(self.board.data[row][column],
-                             self.board.sections[section_index1].cells[section_index2])
+            self.assertEqual(self.board._data[row][column],
+                             self.board._sections[section_index1]._cells[section_index2])
             section_index2 += 1
             section_index2 = section_index2 % self.board.size
 
