@@ -25,11 +25,11 @@ class Board:
 
             cell_digit_pair = self.__generate_X_different_cells_Y_different_digits(start_cells,
                                                                                    different_nums_for_start_cells)
-            for cell_coordinates_flat, digit in cell_digit_pair:
+            for cell_coordinates_flat, value in cell_digit_pair:
                 row = int(cell_coordinates_flat / size)
                 index = cell_coordinates_flat % size
                 cell = self._data[row][index]
-                cell.value = digit
+                cell.value = value
                 if cell.validate():
                     failed = False
                 else:
